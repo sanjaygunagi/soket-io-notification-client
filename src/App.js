@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { io } from "socket.io-client";
 import Notification from "./Notification";
 const App = () => {
   const [time, setTime] = React.useState("fetching");
   const [message, setMessage] = React.useState([]);
+  const [newData, setNewData] = React.useState([]);
   React.useEffect(() => {
     //WS
     // const socket = io("http://localhost:5002", { transports: ["websocket"] });
@@ -23,13 +24,30 @@ const App = () => {
       socket.disconnect();
     };
   }, []);
+
+  const mapIt = (message) => {
+    for (let i = 0; i < message?.length; i++) {
+      if (message[i]?.id === message[i + 1]?.id) {
+        const temp = message[i];
+        message[i] = message[i + 1];
+        message[i + 1] = temp;
+      }
+    }
+    // console.log("latest", message);
+    setNewData(message?.reverse());
+  };
+
+  useEffect(() => {
+    mapIt(message);
+  }, [message]);
+
   return (
     <div className="App">
       {time}
 
       {/* to bring cancelled to beginning of an array*/}
 
-      {/* message
+      {/*       {message
         .sort(function (x, y) {
           return x.message?.includes("cancelled")
             ? -1
@@ -37,8 +55,9 @@ const App = () => {
             ? 1
             : 0;
         }) */}
+      {newData?.map((elem) => {
+        // console.log("elem", elem);
 
-      {message?.map((elem) => {
         return (
           <Notification data={elem} />
           /*           <h1

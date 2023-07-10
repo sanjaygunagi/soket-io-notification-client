@@ -6,6 +6,8 @@ import "./orderNotification.scss";
 const OrderNotification = (props) => {
   const { setOpenOrderNotify, handleStop, data } = props;
 
+  //   console.log("test in comp" + new Date(), data);
+
   const handleBtnClick = () => {
     handleStop();
     setOpenOrderNotify(false);
@@ -19,6 +21,7 @@ const OrderNotification = (props) => {
       <p className="order-notification__order-received">
         {/* New Order Received/Cancelled */}
         {data?.message}
+        {data?.id}
       </p>
       <p className="order-notification__content">
         {/* Please check your live dashboard or order history for more details. */}
