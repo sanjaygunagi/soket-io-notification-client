@@ -4,13 +4,15 @@ import React from "react";
 import "./orderNotification.scss";
 
 const OrderNotification = (props) => {
-  const { setOpenOrderNotify, handleStop, data } = props;
+  const { setOpenOrderNotify, handleStop, data, socket } = props;
 
   //   console.log("test in comp" + new Date(), data);
 
   const handleBtnClick = () => {
     handleStop();
     setOpenOrderNotify(false);
+    socket?.current?.emit("checked", data);
+    socket?.current?.on("checked", (message) => console.log(message));
   };
   return (
     <div className="order-notification__dialog-container">

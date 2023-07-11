@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Dialog, keyframes } from "@mui/material";
 import OrderNotification from "./OrderNotification";
-// import newOrderNotifySound from "../../assets/audio/notificationRingtone.mp3";
+import newOrderNotifySound from "./assets/audio/notificationRingtone.mp3";
+import fileMp3 from "./assets/audio/file.mp3";
 // import { useSelector } from "react-redux";
 // import { useDispatch } from "react-redux";
 
@@ -14,14 +15,14 @@ const slideInRight = keyframes`
   }
 `;
 
-const Notification = ({ data }) => {
+const Notification = ({ data, socket }) => {
   //   const { subscriberId } = JSON.parse(
   //     JSON.stringify(useSelector((state) => state.auth))
   //   );
-  return <OrderNotificationDialogue data={data} />;
+  return <OrderNotificationDialogue data={data} socket={socket} />;
 };
 
-const OrderNotificationDialogue = ({ data }) => {
+const OrderNotificationDialogue = ({ data, socket }) => {
   //   const dispatch = useDispatch();
   const [openOrderNotify, setOpenOrderNotify] = useState(false);
   const audioRef = useRef(null);
@@ -58,6 +59,11 @@ const OrderNotificationDialogue = ({ data }) => {
   return (
     <>
       <div>
+        {data?.message?.includes("cancelled") ? (
+          <audio ref={audioRef} src={fileMp3} loop />
+        ) : (
+          <audio ref={audioRef} src={newOrderNotifySound} loop />
+        )}
         {/* <audio ref={audioRef} src={newOrderNotifySound} loop /> */}
         <Dialog
           open={openOrderNotify}
@@ -73,6 +79,9 @@ const OrderNotificationDialogue = ({ data }) => {
               bottom: "10px",
               right: "50px",
             },
+            "& .css-yiavyu-MuiBackdrop-root-MuiDialog-backdrop": {
+              background: "none",
+            },
           }}
           aria-labelledby="my-custom-dialog-title"
           aria-describedby="my-custom-dialog-description"
@@ -82,6 +91,7 @@ const OrderNotificationDialogue = ({ data }) => {
               setOpenOrderNotify={setOpenOrderNotify}
               handleStop={handleStop}
               data={data}
+              socket={socket}
             />
           </div>
         </Dialog>
